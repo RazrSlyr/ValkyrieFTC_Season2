@@ -17,7 +17,7 @@ public class AutoBack extends LinearOpMode {
         while (opModeIsActive()) {
             double time = System.currentTimeMillis();
             robot.right.setPower(-1);
-            robot.left.setPower(-1/* * 0.785*/);
+            robot.left.setPower(-1 * 0.9625)/* * 0.785*/;
             while(/*System.currentTimeMillis() - time < 2500 && */opModeIsActive());
             robot.right.setPower(0);
             robot.left.setPower(0);

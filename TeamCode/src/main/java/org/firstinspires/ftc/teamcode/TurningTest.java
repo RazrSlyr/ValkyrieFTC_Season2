@@ -3,15 +3,14 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-@Autonomous(name="Encoder", group="Auto")
-public class Encoder extends LinearOpMode {
+@Autonomous(name = "Turn", group = "eee")
+public class TurningTest extends LinearOpMode {
+
     Robot robot = new Robot();
+    @Override
     public void runOpMode() {
         robot.initialize(this);
         waitForStart();
-        while (opModeIsActive()) {
-            robot.encoderDrive(25, 0.125);
-            stop();
-        }
+        robot.encoderTurn(90, 0.125);
     }
 }

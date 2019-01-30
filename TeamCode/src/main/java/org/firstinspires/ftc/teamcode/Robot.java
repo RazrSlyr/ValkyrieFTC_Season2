@@ -22,13 +22,14 @@ public class Robot {
      */
 
     private double NUM_TICKS = 100 * 5 / 3.25 * 5 / 6 * 5 / 3 * 10 / 9;
-    private double NINETY_DEG = 10;
+    private double NINETY_DEG = 10 * 90.0 / 100 * 95 / 100 * 90 / 85 * 180 / 140 * 180 / 250 * 180 / 160;
     private double CIRCUMFERENCE = 3.14961 * Math.PI;
     private double RISE_TIME = 100;
 
     public DcMotor left;
     public DcMotor right;
 
+    public OpMode opMode;
 
     public ColorSensor cSensor;
 
@@ -45,6 +46,8 @@ public class Robot {
     public ColorSensor color;
 
     public void initialize(OpMode opMode) {
+        this.opMode = opMode;
+
         left = opMode.hardwareMap.dcMotor.get("left");
         right = opMode.hardwareMap.dcMotor.get("right");
         right.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -63,7 +66,9 @@ public class Robot {
 //        hook = opMode.hardwareMap.servo.get("hook");
     }
 
-    public void encoderDrive(double inches, LinearOpMode opMode, double power) {
+    public void encoderDrive(double inches, double power) {
+        left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
@@ -78,11 +83,12 @@ public class Robot {
         left.setPower(power * 0.97);
         right.setPower(power);
 
-        while ((left.isBusy() && right.isBusy()) && opMode.opModeIsActive()) {
+        while ((left.isBusy() && right.isBusy()) && ((LinearOpMode)opMode).opModeIsActive()) {
             opMode.telemetry.addData("Left Distance Remaining: ", left.getTargetPosition() - left.getCurrentPosition());
             opMode.telemetry.addData("Right Distance Remaining:", right.getTargetPosition() - right.getCurrentPosition());
             opMode.telemetry.update();
-        };
+        }
+        ;
 
         left.setPower(0);
         right.setPower(0);
@@ -118,14 +124,19 @@ public class Robot {
         intake.setPower(0);
     }
 
-    public void encoderTurn(double angle, double speed, LinearOpMode op) {
+    public void encoderTurn(double angle, double speed) {
+        left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
         right.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        angle = angle % 360;
+
         double newAng = (Math.abs(angle) / 90) * NINETY_DEG;
         int distance = (int) ((newAng / CIRCUMFERENCE) * NUM_TICKS);
-        if(angle < 0) {
-            left.setTargetPosition(-distance / 2 * 80/90 * 90/88 * 90/100);
+        if (angle < 0) {
+            left.setTargetPosition(-distance);
             right.setTargetPosition(distance);
         } else {
             left.setTargetPosition(distance);
@@ -138,7 +149,7 @@ public class Robot {
         left.setPower(speed * 0.97);
         right.setPower(speed);
 
-        while(left.isBusy() || right.isBusy() && op.opModeIsActive());
+        while (left.isBusy() || right.isBusy() && ((LinearOpMode)(opMode)).opModeIsActive()) ;
 
         left.setPower(0);
         right.setPower(0);
@@ -147,6 +158,7 @@ public class Robot {
         right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
     }
+
     /*
     public void climberMove(double dPR, double max) {
         double dist =
@@ -155,15 +167,35 @@ public class Robot {
     public void raiseClimber() {
         climber.setPower(-0.25);
         double timer = System.currentTimeMillis();
-        while(System.currentTimeMillis() - timer < RISE_TIME);
+        while (System.currentTimeMillis() - timer < RISE_TIME) ;
         climber.setPower(0);
     }
 
     public void pullClimber() {
         climber.setPower(0.25);
         double timer = System.currentTimeMillis();
-        while(System.currentTimeMillis() - timer < RISE_TIME);
+        while (System.currentTimeMillis() - timer < RISE_TIME) ;
         climber.setPower(0);
+    }
+
+    public boolean isOrange(double[] blank) {
+        double red = color.red();
+        double green = color.green();
+        double blue = color.blue();
+
+        if ((red > blank[0] * 0.7 && red < blank[0] * 1.3) && (green > blank[1] * 0.7 && green < blank[1] * 1.3) && (blue > blank[2] * 0.7 && blue < blank[2] * 1.3)) {
+            opMode.telemetry.addData(">", "Empty Space");
+            opMode.telemetry.update();
+            return false;
+        } else if (red > green * 0.7 && red < green * 1.3 && red > blue * 0.7 && red < blue * 1.3) {
+            opMode.telemetry.addData(">", "Ball");
+            opMode.telemetry.update();
+            return false;
+        } else {
+            opMode.telemetry.addData(">", "Cube");
+            opMode.telemetry.update();
+            return true;
+        }
     }
 
 

@@ -35,7 +35,7 @@ public class TeleTest extends OpMode {
 
 
         //connecting left stick to the left motor
-        robot.left.setPower(ly * 0.97);
+        robot.left.setPower(ly * 0.9625);
 
         //connecting right stick to the right motor
         robot.right.setPower(ry);

@@ -54,7 +54,7 @@ public class ShapeDetect extends LinearOpMode {
                 // getUpdatedRecognitions() will return null if no new information is available since
                 // the last time that call was made.
                 List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-                if (updatedRecognitions != null) {
+                /*if (updatedRecognitions != null) {
                     telemetry.addData("# Object Detected", updatedRecognitions.size());
                     int numGold = 0;
                     int numSilver = 0;
@@ -68,6 +68,20 @@ public class ShapeDetect extends LinearOpMode {
                     telemetry.addData("Num Golds: ",  numGold);
                     telemetry.addData("Num Silvers: ", numSilver);
                     telemetry.update();
+                }*/
+                float goldX = -1;
+                float silver1X = -1;
+                float silver2X = -1;
+                if(updatedRecognitions != null && updatedRecognitions.size() == 3) {
+                    for(Recognition r : updatedRecognitions) {
+                        if(r.getLabel().equals(LABEL_GOLD_MINERAL)) {
+                            goldX = r.getLeft();
+                        } else if(silver1X == -1) {
+                            silver1X = r.getLeft();
+                        } else {
+                            silver2X = r.getLeft();
+                        }
+                    }
                 }
             }
         }
