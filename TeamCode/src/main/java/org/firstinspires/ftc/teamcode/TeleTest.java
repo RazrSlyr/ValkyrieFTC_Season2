@@ -30,10 +30,15 @@ public class TeleTest extends OpMode {
 
 
         //connecting left stick to the left motor
-        robot.left.setPower(Math.pow((ly * ly + lx * lx), 0.5)  * 0.9625);
+        robot.left.setPower((ly + lx)  * 0.9625);
 
         //connecting right stick to the right motor
-        robot.right.setPower(Math.pow((ly * ly - lx * lx), 0.5));
+        robot.right.setPower(ly - lx);
+
+        telemetry.addData("Right Power ", robot.right.getPowerFloat());
+        telemetry.addData("Left Power ", robot.left.getPowerFloat());
+        telemetry.update();
+
 
         double climbPow = 1 * (gamepad2.left_stick_y);
 
