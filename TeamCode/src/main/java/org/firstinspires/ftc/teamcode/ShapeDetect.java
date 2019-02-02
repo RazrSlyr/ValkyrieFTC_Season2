@@ -51,24 +51,9 @@ public class ShapeDetect extends LinearOpMode {
 
         while (opModeIsActive()) {
             if (tfod != null) {
-                // getUpdatedRecognitions() will return null if no new information is available since
-                // the last time that call was made.
+
                 List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-                /*if (updatedRecognitions != null) {
-                    telemetry.addData("# Object Detected", updatedRecognitions.size());
-                    int numGold = 0;
-                    int numSilver = 0;
-                    for(Recognition r : updatedRecognitions) {
-                        if(r.getLabel().equals(LABEL_GOLD_MINERAL)) {
-                            numGold++;
-                        } else {
-                            numSilver++;
-                        }
-                    }
-                    telemetry.addData("Num Golds: ",  numGold);
-                    telemetry.addData("Num Silvers: ", numSilver);
-                    telemetry.update();
-                }*/
+
                 float goldX = -1;
                 float silver1X = -1;
                 float silver2X = -1;
@@ -82,6 +67,20 @@ public class ShapeDetect extends LinearOpMode {
                             silver2X = r.getLeft();
                         }
                     }
+                    telemetry.addData("Gold X: ", goldX);
+                    telemetry.addData("Silver1 X: ", silver1X);
+                    telemetry.addData("Silver2 X: ", silver2X);
+
+                    if(goldX < silver1X && goldX < silver2X) {
+                        telemetry.addData("--->", "Gold is left");
+                    } else if(goldX > silver1X && goldX < silver2X) {
+                        telemetry.addData("--->", "Gold is middle");
+                    } else if(goldX < silver1X && goldX > silver2X) {
+                        telemetry.addData("--->", "Gold is middle");
+                    } else if(goldX > silver1X && goldX > silver2X){
+                        telemetry.addData("--->", "Gold is right");
+                    }
+                    telemetry.update();
                 }
             }
         }

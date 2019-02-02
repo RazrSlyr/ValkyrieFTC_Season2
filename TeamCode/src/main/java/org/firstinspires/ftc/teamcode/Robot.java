@@ -33,7 +33,7 @@ public class Robot {
 
     public ColorSensor cSensor;
 
-    public DcMotor intake;
+    public CRServo intake;
 
     public DcMotor arm;
 
@@ -52,17 +52,17 @@ public class Robot {
         right = opMode.hardwareMap.dcMotor.get("right");
         right.setDirection(DcMotorSimple.Direction.REVERSE);
 
-//
-        color = opMode.hardwareMap.colorSensor.get("color");
-//
-//        intake = opMode.hardwareMap.dcMotor.get("intakeArm");
-//
+
+//        color = opMode.hardwareMap.colorSensor.get("color");
+
+        intake = opMode.hardwareMap.crservo.get("intake");
+
         climber = opMode.hardwareMap.dcMotor.get("climber");
-//
+
 //        gyro = opMode.hardwareMap.gyroSensor.get("gyro");
-//
+
         arm = opMode.hardwareMap.dcMotor.get("arm");
-//
+
 //        hook = opMode.hardwareMap.servo.get("hook");
     }
 
@@ -83,7 +83,7 @@ public class Robot {
         left.setPower(power * 0.97);
         right.setPower(power);
 
-        while ((left.isBusy() && right.isBusy()) && ((LinearOpMode)opMode).opModeIsActive()) {
+        while ((left.isBusy() && right.isBusy()) && ((LinearOpMode) opMode).opModeIsActive()) {
             opMode.telemetry.addData("Left Distance Remaining: ", left.getTargetPosition() - left.getCurrentPosition());
             opMode.telemetry.addData("Right Distance Remaining:", right.getTargetPosition() - right.getCurrentPosition());
             opMode.telemetry.update();
@@ -149,7 +149,7 @@ public class Robot {
         left.setPower(speed * 0.97);
         right.setPower(speed);
 
-        while (left.isBusy() || right.isBusy() && ((LinearOpMode)(opMode)).opModeIsActive()) ;
+        while (left.isBusy() || right.isBusy() && ((LinearOpMode) (opMode)).opModeIsActive()) ;
 
         left.setPower(0);
         right.setPower(0);
@@ -196,6 +196,10 @@ public class Robot {
             opMode.telemetry.update();
             return true;
         }
+    }
+
+    public void dropMarker() {
+
     }
 
 
